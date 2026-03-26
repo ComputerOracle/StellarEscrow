@@ -1,0 +1,54 @@
+# StellarEscrow
+
+Decentralized escrow on Stellar/Soroban Network.
+
+## Features
+✅ Trade creation form (preview + confirm)
+✅ Buyer funding flow (USDC approval + tx confirmation) 
+✅ Seller completion + buyer receipt confirmation
+✅ Dispute resolution with registered arbitrators
+✅ Tiered fees based on volume
+✅ Trade history & CSV export
+✅ **New: Buyer funding UI** (`client/`)
+
+## Quick Start
+
+### Backend (Soroban Contract + Indexer)
+```bash
+# Deploy contract (Soroban CLI)
+soroban contract deploy --wasm target/*.wasm --source dev --network testnet
+
+# Run indexer
+cd indexer
+cargo run
+```
+
+### Frontend (SvelteKit UI)
+```bash
+cd client
+pnpm install
+pnpm dev    # http://localhost:5173
+```
+
+**Test Funding**: Visit `/trades/1` → **Fund Trade** → Review preview → Approve USDC → Confirm
+
+## Contract Functions
+```
+Key funding flow:
+```
+- `get_funding_preview(trade_id, buyer)` → FundingPreview (balance, allowance)
+- `execute_fund(trade_id, buyer, preview)` → transfers USDC, emits `funded`
+
+## Architecture
+```
+- `contract/` → Soroban WASM contract
+- `indexer/` → Event monitoring + API/WebSocket  
+- `client/` → SvelteKit UI (funding interface #32)
+
+## Development
+```
+pnpm dev    # Frontend
+cargo test  # Backend tests
+docker-compose up  # Indexer + DB
+```
+
